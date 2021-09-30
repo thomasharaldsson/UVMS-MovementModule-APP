@@ -38,6 +38,7 @@ public class MovementDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(MovementDao.class);
     private static final String CONNECT_ID = "connectId";
+    private static final String SOURCES = "sources";
 
     @PersistenceContext
     private EntityManager em;
@@ -151,7 +152,7 @@ public class MovementDao {
             TypedQuery<Movement> query = em.createNamedQuery(Movement.FIND_PREVIOUS, Movement.class);
             query.setParameter("id", id);
             query.setParameter("date", date);
-            query.setParameter("sources", sources);
+            query.setParameter(SOURCES, sources);
             query.setMaxResults(1);
             singleResult = query.getSingleResult();
         } catch (NoResultException e) {
@@ -170,7 +171,7 @@ public class MovementDao {
             TypedQuery<Movement> query = em.createNamedQuery(Movement.FIND_NEXT, Movement.class);
             query.setParameter("id", id);
             query.setParameter("date", date);
-            query.setParameter("sources", sources);
+            query.setParameter(SOURCES, sources);
             singleResult = query.getSingleResult();
         } catch (NoResultException e) {
             LOG.debug("No previous movement found for date: {} and connectedId: {}", date, id);
@@ -360,7 +361,7 @@ public class MovementDao {
             query.setParameter("id", id);
             query.setParameter("startDate", startDate);
             query.setParameter("endDate", endDate);
-            query.setParameter("sources", sources);
+            query.setParameter(SOURCES, sources);
             return query.getResultList();
         } catch (NoResultException e) {
             LOG.debug("No positions found for asset after date: {}", startDate);
@@ -372,7 +373,7 @@ public class MovementDao {
         try {
             TypedQuery<Movement> query = em.createNamedQuery(Movement.FIND_LATEST_X_NUMBER_FOR_ASSET, Movement.class);
             query.setParameter("id", id);
-            query.setParameter("sources", sources);
+            query.setParameter(SOURCES, sources);
             query.setMaxResults(number);
             return query.getResultList();
         } catch (NoResultException e) {
@@ -384,7 +385,7 @@ public class MovementDao {
     public List<MovementDto> getLatestWithLimit(Instant date, List<MovementSourceType> sources) {
         TypedQuery<MovementDto> query = em.createNamedQuery(Movement.FIND_LATEST_SINCE, MovementDto.class);
         query.setParameter("date", date);
-        query.setParameter("sources", sources);
+        query.setParameter(SOURCES, sources);
         return query.getResultList();
     }
 
@@ -393,7 +394,7 @@ public class MovementDao {
         query.setParameter("connectIds", connectIds);
         query.setParameter("fromDate", fromDate);
         query.setParameter("toDate", toDate);
-        query.setParameter("sources", sources);
+        query.setParameter(SOURCES, sources);
         return query.getResultList();
     }
     
