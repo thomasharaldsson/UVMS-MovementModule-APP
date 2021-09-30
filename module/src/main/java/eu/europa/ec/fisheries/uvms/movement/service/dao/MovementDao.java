@@ -36,11 +36,13 @@ import java.util.*;
 @Stateless
 public class MovementDao {
 
+    public static final String TIMESTAMP = "timestamp";
     private static final Logger LOG = LoggerFactory.getLogger(MovementDao.class);
     private static final String CONNECT_ID = "connectId";
     private static final String SOURCES = "sources";
     private static final String FROM_DATE = "fromDate";
     private static final String TO_DATE = "toDate";
+
 
     @PersistenceContext
     private EntityManager em;
@@ -301,17 +303,17 @@ public class MovementDao {
         List<Predicate> predicates = new ArrayList<>();
 
         if (cursorPagination.getTimestampCursor() != null && cursorPagination.getIdCursor() != null) {
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(movement.get("timestamp"), cursorPagination.getTimestampCursor()));
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(movement.get("timestamp"), cursorPagination.getTo()));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(movement.get(TIMESTAMP), cursorPagination.getTimestampCursor()));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(movement.get(TIMESTAMP), cursorPagination.getTo()));
             predicates.add(criteriaBuilder.not(
                                 criteriaBuilder.and(
-                                        criteriaBuilder.equal(movement.get("timestamp"), cursorPagination.getTimestampCursor()),
+                                        criteriaBuilder.equal(movement.get(TIMESTAMP), cursorPagination.getTimestampCursor()),
                                         criteriaBuilder.lessThan(movement.get("id"), cursorPagination.getIdCursor())
                                         )
                                 ));
         } else {
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(movement.get("timestamp"), cursorPagination.getFrom()));
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(movement.get("timestamp"), cursorPagination.getTo()));
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(movement.get(TIMESTAMP), cursorPagination.getFrom()));
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(movement.get(TIMESTAMP), cursorPagination.getTo()));
         }
 
         if (cursorPagination.getConnectIds() != null) {
@@ -325,7 +327,7 @@ public class MovementDao {
 
         cq.where(criteriaBuilder.and(predicates.stream().toArray(Predicate[]::new)));
 
-        cq.orderBy(criteriaBuilder.asc(movement.get("timestamp")), criteriaBuilder.asc(movement.get("id")));
+        cq.orderBy(criteriaBuilder.asc(movement.get(TIMESTAMP)), criteriaBuilder.asc(movement.get("id")));
         TypedQuery<Movement> query = em.createQuery(cq);
         if (cursorPagination.getLimit() != null) {
             query.setMaxResults(cursorPagination.getLimit()); // limit
