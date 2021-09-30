@@ -222,8 +222,7 @@ public class MovementDao {
             query.setParameter(FROM_DATE, from);
             query.setParameter(TO_DATE, to);
 
-            Long count = (Long)query.getSingleResult();
-            return count;
+            return (Long)query.getSingleResult();
         }catch (NoResultException e) {
             LOG.debug("No valid position in DB for {}, between {} and {}", asset, from, to);
             return 0;
