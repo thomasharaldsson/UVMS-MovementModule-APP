@@ -40,6 +40,7 @@ public class MovementDao {
     private static final String CONNECT_ID = "connectId";
     private static final String SOURCES = "sources";
     private static final String FROM_DATE = "fromDate";
+    private static final String TO_DATE = "toDate";
 
     @PersistenceContext
     private EntityManager em;
@@ -217,7 +218,7 @@ public class MovementDao {
             Query query = em.createNamedQuery(Movement.NR_OF_MOVEMENTS_FOR_ASSET_IN_TIMESPAN);
             query.setParameter("asset", asset);
             query.setParameter(FROM_DATE, from);
-            query.setParameter("toDate", to);
+            query.setParameter(TO_DATE, to);
 
             Long count = (Long)query.getSingleResult();
             return count;
@@ -252,7 +253,7 @@ public class MovementDao {
             if (searchValue.isRange()) {
                 if (searchValue.getField().equals(SearchField.DATE)) {
                     query.setParameter(FROM_DATE, DateUtils.stringToDate(searchValue.getFromValue()));
-                    query.setParameter("toDate", DateUtils.stringToDate(searchValue.getToValue()));
+                    query.setParameter(TO_DATE, DateUtils.stringToDate(searchValue.getToValue()));
                 }
             } else {
                 if (searchValue.getField().equals(SearchField.AREA)) {
@@ -394,7 +395,7 @@ public class MovementDao {
         TypedQuery<Movement> query = em.createNamedQuery(Movement.FIND_ALL_FOR_CONNECT_IDS_BETWEEN_DATES, Movement.class);
         query.setParameter("connectIds", connectIds);
         query.setParameter(FROM_DATE, fromDate);
-        query.setParameter("toDate", toDate);
+        query.setParameter(TO_DATE, toDate);
         query.setParameter(SOURCES, sources);
         return query.getResultList();
     }
