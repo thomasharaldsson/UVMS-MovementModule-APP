@@ -381,7 +381,7 @@ public class MovementDao {
             query.setMaxResults(number);
             return query.getResultList();
         } catch (NoResultException e) {
-            LOG.debug("No positions found for asset {}");
+            LOG.debug("No positions found for asset {}", e.getMessage());
             return new ArrayList<>();
         }
     }
